@@ -30,14 +30,31 @@ async function run() {
     try {
 
         const users = client.db("blood-donor").collection("users");
+        const donations = client.db("blood-donor").collection("donations");
 
         app.post("/users", async (req, res) => {
             const data = req.body;
             const result = await users.insertOne(data);
             res.send(result)
         })
+        // get user data 
+        app.get("/users/:email", async (req, res) => {
+
+            const data = req.params.email;
+            console.log(data)
+            const query = { email: data }
+            const result = await users.findOne(query)
+            res.send(result)
+        })
 
 
+        // donations
+        app.post("/donations", async (req, res) => {
+            const data = req.body;
+
+            const result = await donations.insertOne(data)
+            res.send(result)
+        })
 
 
 
