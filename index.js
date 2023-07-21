@@ -63,12 +63,32 @@ async function run() {
                 const result = await donations.insertOne(data)
                 res.send(result)
             }
-
-
-
         })
 
 
+        // check user role 
+
+        app.get("/userCheck", async (req, res) => {
+            // const email = req.query.email;
+
+            let query={}
+            if (req.query.email) {
+                query={email:req.query.email}
+                
+            }
+            const result= await users.findOne(query);
+           
+
+            if (result?.role=="admin") {
+                return res.send({role:"admin"})
+            } 
+            else if(result?.role=="author"){
+                return res.send({role:"author"})   
+            }
+            else{
+                return res.send({role:"user"})
+            }
+        })
 
 
 
