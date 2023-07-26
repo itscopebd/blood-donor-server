@@ -71,25 +71,50 @@ async function run() {
         app.get("/userCheck", async (req, res) => {
             // const email = req.query.email;
 
-            let query={}
+            let query = {}
             if (req.query.email) {
-                query={email:req.query.email}
-                
-            }
-            const result= await users.findOne(query);
-           
+                query = { email: req.query.email }
 
-            if (result?.role=="admin") {
-                return res.send({role:"admin"})
-            } 
-            else if(result?.role=="author"){
-                return res.send({role:"author"})   
             }
-            else{
-                return res.send({role:"user"})
+            
+            const result = await users.findOne(query);
+
+
+            if (result?.role === "admin") {
+                return res.send({ role: "admin" })
+            }
+            else if (result?.role === "author") {
+                return res.send({ role: "author" })
+            }
+            else {
+                return res.send({ role: "user" })
             }
         })
 
+
+        // users api 
+
+
+        app.get("/users", async (req, res) => {
+
+            const value = users.find({
+                $nor: [
+                    {
+                        role: { $in: ['admin', "author"] }
+                    }
+                ]
+            })
+
+            if (!value) {
+                return res.send({ message: "User is Not Found ! " })
+
+            }
+
+            const result = await value.toArray();
+            res.send(result)
+
+
+        })
 
 
 
